@@ -17,7 +17,12 @@ You can also include extra columns for external factors (optional).
 uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 
 if uploaded_file is not None:
-    data = pd.read_csv(uploaded_file)
+   import csv
+
+# Try to detect delimiter automatically
+sniffed_delimiter = csv.Sniffer().sniff(uploaded_file.read(1024).decode('utf-8')).delimiter
+uploaded_file.seek(0)  # Reset file pointer after sniffing
+data = pd.read_csv(uploaded_file, delimiter=sniffed_delimiter)
     st.write("Columns in your file:", data.columns.tolist())
     st.write("Data preview:")
     st.write(data.head())
